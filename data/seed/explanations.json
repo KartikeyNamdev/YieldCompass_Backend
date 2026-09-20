@@ -1,0 +1,136 @@
+{
+  "aurora-lend": {
+    "score": 86,
+    "text": "Aurora Lend (sample) scores 86 out of 100 on a scale where higher means lower estimated risk. Strongest factors: withdrawal liquidity (42% of TVL is withdrawable now); oracle and dependency risk (Oracle provider: Pyth). Weakest factors: governance and admin-key risk (Upgrade authority: multisig); smart-contract and audit quality (2 audit(s) cited). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/aurora-lend/audits",
+        "quote": "Security review by Sample Audit Co A, dated 2023-02-10. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/aurora-lend/audits",
+        "quote": "Security review by Sample Audit Co B, dated 2024-06-21. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/aurora-lend/docs",
+        "quote": "Asset prices are read from the Pyth oracle."
+      },
+      {
+        "url": "https://example.org/sample/aurora-lend/docs",
+        "quote": "The upgrade authority is a 4-of-7 multisig."
+      }
+    ]
+  },
+  "basalt-markets": {
+    "score": 84,
+    "text": "Basalt Markets (sample) scores 84 out of 100 on a scale where higher means lower estimated risk. Strongest factors: withdrawal liquidity (35% of TVL is withdrawable now); oracle and dependency risk (Oracle provider: Switchboard). Weakest factors: protocol maturity and incident history (Live for 1600 days; 1 incident(s) cited); smart-contract and audit quality (2 audit(s) cited). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/basalt-markets/audits",
+        "quote": "Security review by Sample Audit Co A, dated 2022-05-02. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/basalt-markets/audits",
+        "quote": "Security review by Sample Audit Co C, dated 2024-01-18. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/basalt-markets/incidents",
+        "quote": "A price feed update was delayed for about 40 minutes; no funds were lost."
+      },
+      {
+        "url": "https://example.org/sample/basalt-markets/docs",
+        "quote": "Asset prices are read from the Switchboard oracle."
+      },
+      {
+        "url": "https://example.org/sample/basalt-markets/docs",
+        "quote": "The upgrades pass through a 72-hour timelock."
+      }
+    ]
+  },
+  "cinder-stake": {
+    "score": 84,
+    "text": "Cinder Stake (sample) scores 84 out of 100 on a scale where higher means lower estimated risk. Strongest factors: protocol maturity and incident history (Live for 1675 days; 0 incident(s) cited); smart-contract and audit quality (3 audit(s) cited). Weakest factors: oracle and dependency risk (Oracle provider not found in the provided text); withdrawal liquidity (12% of TVL is withdrawable now). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/cinder-stake/audits",
+        "quote": "Security review by Sample Audit Co B, dated 2021-09-09. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/cinder-stake/audits",
+        "quote": "Security review by Sample Audit Co C, dated 2023-03-30. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/cinder-stake/audits",
+        "quote": "Security review by Sample Audit Co A, dated 2024-11-05. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/cinder-stake/docs",
+        "quote": "The upgrade authority is a 5-of-9 multisig."
+      }
+    ]
+  },
+  "delta-farm": {
+    "score": 28,
+    "text": "Delta Farm (sample) scores 28 out of 100 on a scale where higher means lower estimated risk. Strongest factors: oracle and dependency risk (Oracle provider: custom TWAP); protocol maturity and incident history (Live for 478 days; 1 incident(s) cited). Weakest factors: yield source quality (92% of headline yield comes from emissions); governance and admin-key risk (Upgrade authority: single_key). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/delta-farm/audits",
+        "quote": "Security review by Sample Audit Co D, dated 2024-08-20. Critical findings unresolved: 2."
+      },
+      {
+        "url": "https://example.org/sample/delta-farm/incidents",
+        "quote": "A reward emission bug over-distributed tokens for one epoch before a patch."
+      },
+      {
+        "url": "https://example.org/sample/delta-farm/docs",
+        "quote": "Asset prices are read from the custom TWAP oracle."
+      },
+      {
+        "url": "https://example.org/sample/delta-farm/docs",
+        "quote": "The the program upgrade authority is a single key held by the team."
+      }
+    ]
+  },
+  "ember-vault": {
+    "score": 79,
+    "text": "Ember Vault (sample) scores 79 out of 100 on a scale where higher means lower estimated risk. Strongest factors: oracle and dependency risk (Oracle provider: Pyth); protocol maturity and incident history (Live for 773 days; 0 incident(s) cited). Weakest factors: smart-contract and audit quality (1 audit(s) cited); withdrawal liquidity (20% of TVL is withdrawable now). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/ember-vault/audits",
+        "quote": "Security review by Sample Audit Co C, dated 2023-10-01. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/ember-vault/docs",
+        "quote": "Asset prices are read from the Pyth oracle."
+      },
+      {
+        "url": "https://example.org/sample/ember-vault/docs",
+        "quote": "The upgrade authority is a 3-of-5 multisig."
+      }
+    ]
+  },
+  "flux-stable-pool": {
+    "score": 69,
+    "text": "Flux Stable Pool (sample) scores 69 out of 100 on a scale where higher means lower estimated risk. Strongest factors: withdrawal liquidity (50% of TVL is withdrawable now); protocol maturity and incident history (Live for 1214 days; 0 incident(s) cited). Weakest factors: oracle and dependency risk (Oracle provider not found in the provided text); yield source quality (58% of headline yield comes from emissions). The score comes from fixed rules; the model only extracts cited facts. Informational only, not financial advice.",
+    "generated_by": "template",
+    "sources": [
+      {
+        "url": "https://example.org/sample/flux-stable-pool/audits",
+        "quote": "Security review by Sample Audit Co A, dated 2022-08-01. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/flux-stable-pool/audits",
+        "quote": "Security review by Sample Audit Co D, dated 2024-04-15. Critical findings unresolved: 0."
+      },
+      {
+        "url": "https://example.org/sample/flux-stable-pool/docs",
+        "quote": "The upgrades pass through a 48-hour timelock."
+      }
+    ]
+  }
+}

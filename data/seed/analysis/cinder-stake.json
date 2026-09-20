@@ -1,0 +1,42 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "cinder-stake",
+    "audits": [
+      {
+        "firm": "Sample Audit Co B",
+        "date": "2021-09-09",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co B, dated 2021-09-09. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/cinder-stake/audits"
+      },
+      {
+        "firm": "Sample Audit Co C",
+        "date": "2023-03-30",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co C, dated 2023-03-30. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/cinder-stake/audits"
+      },
+      {
+        "firm": "Sample Audit Co A",
+        "date": "2024-11-05",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co A, dated 2024-11-05. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/cinder-stake/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "multisig",
+      "quote": "The upgrade authority is a 5-of-9 multisig.",
+      "source": "https://example.org/sample/cinder-stake/docs"
+    },
+    "oracle": {
+      "provider": null,
+      "quote": null,
+      "source": null
+    },
+    "past_incidents": [],
+    "notes": null
+  }
+}

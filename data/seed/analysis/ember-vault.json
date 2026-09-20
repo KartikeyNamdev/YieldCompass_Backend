@@ -1,0 +1,28 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "ember-vault",
+    "audits": [
+      {
+        "firm": "Sample Audit Co C",
+        "date": "2023-10-01",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co C, dated 2023-10-01. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/ember-vault/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "multisig",
+      "quote": "The upgrade authority is a 3-of-5 multisig.",
+      "source": "https://example.org/sample/ember-vault/docs"
+    },
+    "oracle": {
+      "provider": "Pyth",
+      "quote": "Asset prices are read from the Pyth oracle.",
+      "source": "https://example.org/sample/ember-vault/docs"
+    },
+    "past_incidents": [],
+    "notes": null
+  }
+}

@@ -1,0 +1,25 @@
+[package]
+name = "yc_vault"
+version = "0.1.0"
+description = "YieldCompass fixed-term senior/junior vault (devnet prototype, unaudited)"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "yc_vault"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build", "mock_yield/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "0.32.1", features = ["init-if-needed"] }
+anchor-spl = "0.32.1"
+mock_yield = { path = "../mock_yield", features = ["cpi"] }
+
+[dev-dependencies]
+proptest = "1"

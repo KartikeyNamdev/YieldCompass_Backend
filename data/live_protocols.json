@@ -1,0 +1,8 @@
+[
+  {"id": "jupiter-lend-usdc", "name": "Jupiter Lend USDC", "category": "lending", "defillama_pool": "d783c8df-e2ed-44b4-8317-161ccc1b5f06", "launched": null, "audit_urls": [], "doc_urls": []},
+  {"id": "kamino-lend-usdc", "name": "Kamino Lend USDC", "category": "lending", "defillama_pool": "d2141a59-c199-4be7-8d4b-c8223954836b", "launched": null, "audit_urls": [], "doc_urls": []},
+  {"id": "save-usdc", "name": "Save USDC", "category": "lending", "defillama_pool": "dde4c16c-504d-470b-9404-006287ce0906", "launched": null, "audit_urls": [], "doc_urls": []},
+  {"id": "jito-jitosol", "name": "Jito JitoSOL", "category": "liquid-staking", "defillama_pool": "0e7d0722-9054-4907-8593-567b353c0900", "launched": null, "audit_urls": [], "doc_urls": []},
+  {"id": "marinade-msol", "name": "Marinade mSOL", "category": "liquid-staking", "defillama_pool": "b3f93865-5ec8-4662-90a0-11808e0aa2bd", "launched": null, "audit_urls": [], "doc_urls": []},
+  {"id": "drift-dsol", "name": "Drift dSOL", "category": "liquid-staking", "defillama_pool": "296651fc-25f6-4434-b8ec-17c2af9808da", "launched": null, "audit_urls": [], "doc_urls": []}
+]

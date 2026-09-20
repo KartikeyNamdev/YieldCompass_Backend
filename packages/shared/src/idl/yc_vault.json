@@ -1,0 +1,1675 @@
+{
+  "address": "HoLewEAiPuRaJGJXfS4W6uuVRSeeAxC76VGxx3N4YNSW",
+  "metadata": {
+    "name": "yc_vault",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "YieldCompass fixed-term senior/junior vault (devnet prototype, unaudited)"
+  },
+  "instructions": [
+    {
+      "name": "activate",
+      "discriminator": [
+        194,
+        203,
+        35,
+        100,
+        151,
+        55,
+        170,
+        82
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Anyone may call after the deposit deadline."
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "risk_entry"
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy_pool"
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "mock_yield_program",
+          "address": "13uN3ZYV2puWDXKCLYgxA5ZSYYnBky4cGnuvQDdmpW4B"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_series",
+      "discriminator": [
+        121,
+        83,
+        45,
+        211,
+        93,
+        222,
+        7,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "risk_entry"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_junior",
+      "discriminator": [
+        248,
+        160,
+        216,
+        230,
+        191,
+        106,
+        53,
+        71
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "series",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "share_mint",
+          "writable": true
+        },
+        {
+          "name": "user_shares",
+          "writable": true
+        },
+        {
+          "name": "user_underlying",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_senior",
+      "discriminator": [
+        148,
+        75,
+        56,
+        56,
+        2,
+        114,
+        48,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "series",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "share_mint",
+          "writable": true
+        },
+        {
+          "name": "user_shares",
+          "writable": true
+        },
+        {
+          "name": "user_underlying",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit_junior",
+      "discriminator": [
+        4,
+        71,
+        156,
+        106,
+        25,
+        232,
+        177,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "share_mint",
+          "writable": true
+        },
+        {
+          "name": "user_underlying",
+          "writable": true
+        },
+        {
+          "name": "user_shares",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_senior",
+      "discriminator": [
+        218,
+        97,
+        124,
+        117,
+        212,
+        161,
+        218,
+        219
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "share_mint",
+          "writable": true
+        },
+        {
+          "name": "user_underlying",
+          "writable": true
+        },
+        {
+          "name": "user_shares",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_config",
+      "discriminator": [
+        23,
+        235,
+        115,
+        232,
+        168,
+        96,
+        1,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "admin",
+          "type": "pubkey"
+        },
+        {
+          "name": "risk_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "init_series",
+      "discriminator": [
+        178,
+        100,
+        202,
+        203,
+        208,
+        38,
+        105,
+        209
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "underlying_mint"
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "params.id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "senior_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  110,
+                  105,
+                  111,
+                  114,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "junior_mint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  117,
+                  110,
+                  105,
+                  111,
+                  114,
+                  95,
+                  109,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "strategy_pool",
+          "docs": [
+            "The mock_yield pool. Must be bound to this series PDA and the same mint."
+          ]
+        },
+        {
+          "name": "risk_entry"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitSeriesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "refund",
+      "discriminator": [
+        2,
+        96,
+        183,
+        251,
+        63,
+        208,
+        46,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "series",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "senior_mint",
+          "writable": true
+        },
+        {
+          "name": "junior_mint",
+          "writable": true
+        },
+        {
+          "name": "user_senior",
+          "writable": true
+        },
+        {
+          "name": "user_junior",
+          "writable": true
+        },
+        {
+          "name": "user_underlying",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_paused",
+      "discriminator": [
+        91,
+        60,
+        125,
+        192,
+        176,
+        225,
+        166,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "paused",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "set_risk_entry",
+      "discriminator": [
+        227,
+        70,
+        197,
+        63,
+        219,
+        36,
+        145,
+        193
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "risk_entry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  105,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "protocol_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "protocol_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "score",
+          "type": "u8"
+        },
+        {
+          "name": "realized_apy_bps",
+          "type": "u32"
+        },
+        {
+          "name": "emissions_bps",
+          "type": "u16"
+        },
+        {
+          "name": "expires_at",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "settle",
+      "discriminator": [
+        175,
+        42,
+        185,
+        87,
+        144,
+        131,
+        102,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Anyone (the keeper) may call after maturity."
+          ],
+          "signer": true
+        },
+        {
+          "name": "series",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  105,
+                  101,
+                  115
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "series.id",
+                "account": "Series"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "strategy_pool"
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "mock_yield_program",
+          "address": "13uN3ZYV2puWDXKCLYgxA5ZSYYnBky4cGnuvQDdmpW4B"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Pool",
+      "discriminator": [
+        241,
+        154,
+        109,
+        4,
+        17,
+        177,
+        109,
+        188
+      ]
+    },
+    {
+      "name": "RiskEntry",
+      "discriminator": [
+        26,
+        85,
+        157,
+        251,
+        161,
+        176,
+        141,
+        41
+      ]
+    },
+    {
+      "name": "Series",
+      "discriminator": [
+        240,
+        97,
+        8,
+        183,
+        139,
+        77,
+        250,
+        162
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "Activated",
+      "discriminator": [
+        140,
+        38,
+        35,
+        97,
+        110,
+        193,
+        239,
+        71
+      ]
+    },
+    {
+      "name": "Cancelled",
+      "discriminator": [
+        136,
+        23,
+        42,
+        65,
+        143,
+        233,
+        234,
+        46
+      ]
+    },
+    {
+      "name": "Claimed",
+      "discriminator": [
+        217,
+        192,
+        123,
+        72,
+        108,
+        150,
+        248,
+        33
+      ]
+    },
+    {
+      "name": "Deposited",
+      "discriminator": [
+        111,
+        141,
+        26,
+        45,
+        161,
+        35,
+        100,
+        57
+      ]
+    },
+    {
+      "name": "Refunded",
+      "discriminator": [
+        35,
+        103,
+        149,
+        246,
+        196,
+        123,
+        221,
+        99
+      ]
+    },
+    {
+      "name": "RiskUpdated",
+      "discriminator": [
+        87,
+        30,
+        13,
+        133,
+        134,
+        140,
+        42,
+        47
+      ]
+    },
+    {
+      "name": "SeriesCreated",
+      "discriminator": [
+        2,
+        164,
+        54,
+        38,
+        24,
+        181,
+        233,
+        180
+      ]
+    },
+    {
+      "name": "Settled",
+      "discriminator": [
+        232,
+        210,
+        40,
+        17,
+        142,
+        124,
+        145,
+        238
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Paused",
+      "msg": "Program is paused"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidParams",
+      "msg": "Invalid parameters"
+    },
+    {
+      "code": 6002,
+      "name": "DepositWindowClosed",
+      "msg": "Deposit window is closed"
+    },
+    {
+      "code": 6003,
+      "name": "DepositWindowOpen",
+      "msg": "Deposit window is still open"
+    },
+    {
+      "code": 6004,
+      "name": "WrongStatus",
+      "msg": "Wrong series status"
+    },
+    {
+      "code": 6005,
+      "name": "JuniorBufferTooSmall",
+      "msg": "Junior buffer too small"
+    },
+    {
+      "code": 6006,
+      "name": "RiskEntryStale",
+      "msg": "Risk entry is stale"
+    },
+    {
+      "code": 6007,
+      "name": "RiskScoreTooLow",
+      "msg": "Risk score below series minimum"
+    },
+    {
+      "code": 6008,
+      "name": "NotMatured",
+      "msg": "Series has not matured"
+    },
+    {
+      "code": 6009,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    },
+    {
+      "code": 6010,
+      "name": "NothingToClaim",
+      "msg": "Nothing to claim"
+    },
+    {
+      "code": 6011,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6012,
+      "name": "ActivationConditionsMet",
+      "msg": "Activation conditions are met; series cannot be cancelled"
+    }
+  ],
+  "types": [
+    {
+      "name": "Activated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "start_ts",
+            "type": "i64"
+          },
+          {
+            "name": "maturity_ts",
+            "type": "i64"
+          },
+          {
+            "name": "deployed",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Cancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Claimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "tranche",
+            "type": {
+              "defined": {
+                "name": "Tranche"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Can create series and pause. CANNOT move vault funds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "risk_authority",
+            "docs": [
+              "Only key allowed to write RiskEntry."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Deposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "tranche",
+            "type": {
+              "defined": {
+                "name": "Tranche"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitSeriesParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "term_secs",
+            "type": "i64"
+          },
+          {
+            "name": "deposit_deadline",
+            "type": "i64"
+          },
+          {
+            "name": "min_junior_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "performance_fee_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "depositor",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "sink",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Refunded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RiskEntry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "protocol_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "score",
+            "docs": [
+              "0-100, higher = safer."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "realized_apy_bps",
+            "type": "u32"
+          },
+          {
+            "name": "emissions_bps",
+            "docs": [
+              "Share of headline yield from emissions."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RiskUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "protocol_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "score",
+            "type": "u8"
+          },
+          {
+            "name": "realized_apy_bps",
+            "type": "u32"
+          },
+          {
+            "name": "emissions_bps",
+            "type": "u16"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Series",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "underlying_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "senior_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "junior_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "strategy_pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "risk_entry",
+            "type": "pubkey"
+          },
+          {
+            "name": "rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "term_secs",
+            "type": "i64"
+          },
+          {
+            "name": "deposit_deadline",
+            "type": "i64"
+          },
+          {
+            "name": "start_ts",
+            "type": "i64"
+          },
+          {
+            "name": "maturity_ts",
+            "type": "i64"
+          },
+          {
+            "name": "min_junior_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_risk_score",
+            "type": "u8"
+          },
+          {
+            "name": "senior_principal",
+            "type": "u64"
+          },
+          {
+            "name": "junior_principal",
+            "type": "u64"
+          },
+          {
+            "name": "senior_payout",
+            "type": "u64"
+          },
+          {
+            "name": "junior_payout",
+            "type": "u64"
+          },
+          {
+            "name": "performance_fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "Status"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SeriesCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "rate_bps",
+            "type": "u16"
+          },
+          {
+            "name": "term_secs",
+            "type": "i64"
+          },
+          {
+            "name": "deposit_deadline",
+            "type": "i64"
+          },
+          {
+            "name": "min_junior_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_risk_score",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Settled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "series",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_assets",
+            "type": "u64"
+          },
+          {
+            "name": "senior_payout",
+            "type": "u64"
+          },
+          {
+            "name": "junior_payout",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Status",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Settled"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tranche",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Senior"
+          },
+          {
+            "name": "Junior"
+          }
+        ]
+      }
+    }
+  ]
+}

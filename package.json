@@ -1,0 +1,32 @@
+{
+  "name": "yieldcompass",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/api",
+    "services/ingestion",
+    "services/indexer",
+    "services/keeper"
+  ],
+  "scripts": {
+    "build:libs": "npm -w @yc/waterfall run build && npm -w @yc/shared run build",
+    "test:libs": "npm -w @yc/waterfall test && npm -w @yc/shared test",
+    "test:programs": "anchor build && NODE_OPTIONS=--no-experimental-strip-types npx ts-mocha -p ./tsconfig.json -t 1000000 tests/yc_vault.ts",
+    "test:analytics": "cd services/analytics && .venv/bin/python -m pytest -q"
+  },
+  "devDependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^22.0.0",
+    "anchor-bankrun": "^0.5.0",
+    "chai": "^4.3.0",
+    "mocha": "^10.0.0",
+    "solana-bankrun": "^0.4.0",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

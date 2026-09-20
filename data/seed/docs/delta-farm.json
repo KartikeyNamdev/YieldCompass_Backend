@@ -1,0 +1,14 @@
+[
+  {
+    "source": "https://example.org/sample/delta-farm/audits",
+    "text": "SAMPLE FIXTURE, NOT A REAL AUDIT.\nSecurity review by Sample Audit Co D, dated 2024-08-20. Critical findings unresolved: 2."
+  },
+  {
+    "source": "https://example.org/sample/delta-farm/docs",
+    "text": "SAMPLE FIXTURE. Delta Farm (sample) documentation.\nThe the program upgrade authority is a single key held by the team.\nAsset prices are read from the custom TWAP oracle."
+  },
+  {
+    "source": "https://example.org/sample/delta-farm/incidents",
+    "text": "SAMPLE FIXTURE.\nIncident report (2025-01-14): A reward emission bug over-distributed tokens for one epoch before a patch."
+  }
+]

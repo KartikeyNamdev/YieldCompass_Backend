@@ -1,0 +1,98 @@
+[
+  {
+    "id": "aurora-lend",
+    "name": "Aurora Lend (sample)",
+    "category": "lending",
+    "chain": "solana",
+    "launched": "2022-03-01",
+    "age_days": 1402,
+    "audit_urls": [
+      "https://example.org/sample/aurora-lend/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/aurora-lend/docs",
+      "https://example.org/sample/aurora-lend/incidents"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "basalt-markets",
+    "name": "Basalt Markets (sample)",
+    "category": "lending",
+    "chain": "solana",
+    "launched": "2021-08-15",
+    "age_days": 1600,
+    "audit_urls": [
+      "https://example.org/sample/basalt-markets/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/basalt-markets/docs",
+      "https://example.org/sample/basalt-markets/incidents"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "cinder-stake",
+    "name": "Cinder Stake (sample)",
+    "category": "liquid-staking",
+    "chain": "solana",
+    "launched": "2021-06-01",
+    "age_days": 1675,
+    "audit_urls": [
+      "https://example.org/sample/cinder-stake/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/cinder-stake/docs",
+      "https://example.org/sample/cinder-stake/incidents"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "delta-farm",
+    "name": "Delta Farm (sample)",
+    "category": "yield-farm",
+    "chain": "solana",
+    "launched": "2024-09-10",
+    "age_days": 478,
+    "audit_urls": [
+      "https://example.org/sample/delta-farm/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/delta-farm/docs",
+      "https://example.org/sample/delta-farm/incidents"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "ember-vault",
+    "name": "Ember Vault (sample)",
+    "category": "vault",
+    "chain": "solana",
+    "launched": "2023-11-20",
+    "age_days": 773,
+    "audit_urls": [
+      "https://example.org/sample/ember-vault/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/ember-vault/docs",
+      "https://example.org/sample/ember-vault/incidents"
+    ],
+    "synthetic": true
+  },
+  {
+    "id": "flux-stable-pool",
+    "name": "Flux Stable Pool (sample)",
+    "category": "amm-lp",
+    "chain": "solana",
+    "launched": "2022-09-05",
+    "age_days": 1214,
+    "audit_urls": [
+      "https://example.org/sample/flux-stable-pool/audits"
+    ],
+    "doc_urls": [
+      "https://example.org/sample/flux-stable-pool/docs",
+      "https://example.org/sample/flux-stable-pool/incidents"
+    ],
+    "synthetic": true
+  }
+]

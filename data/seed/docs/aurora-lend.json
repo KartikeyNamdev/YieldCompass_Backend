@@ -1,0 +1,14 @@
+[
+  {
+    "source": "https://example.org/sample/aurora-lend/audits",
+    "text": "SAMPLE FIXTURE, NOT A REAL AUDIT.\nSecurity review by Sample Audit Co A, dated 2023-02-10. Critical findings unresolved: 0.\nSecurity review by Sample Audit Co B, dated 2024-06-21. Critical findings unresolved: 0."
+  },
+  {
+    "source": "https://example.org/sample/aurora-lend/docs",
+    "text": "SAMPLE FIXTURE. Aurora Lend (sample) documentation.\nThe upgrade authority is a 4-of-7 multisig.\nAsset prices are read from the Pyth oracle."
+  },
+  {
+    "source": "https://example.org/sample/aurora-lend/incidents",
+    "text": "SAMPLE FIXTURE.\nNo incidents have been reported."
+  }
+]

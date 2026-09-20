@@ -1,0 +1,35 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "flux-stable-pool",
+    "audits": [
+      {
+        "firm": "Sample Audit Co A",
+        "date": "2022-08-01",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co A, dated 2022-08-01. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/flux-stable-pool/audits"
+      },
+      {
+        "firm": "Sample Audit Co D",
+        "date": "2024-04-15",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co D, dated 2024-04-15. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/flux-stable-pool/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "timelock",
+      "quote": "The upgrades pass through a 48-hour timelock.",
+      "source": "https://example.org/sample/flux-stable-pool/docs"
+    },
+    "oracle": {
+      "provider": null,
+      "quote": null,
+      "source": null
+    },
+    "past_incidents": [],
+    "notes": null
+  }
+}

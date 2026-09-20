@@ -1,0 +1,20 @@
+{
+  "name": "@yc/indexer",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0",
+    "@yc/shared": "*"
+  },
+  "devDependencies": {
+    "@yc/testkit": "*"
+  }
+}

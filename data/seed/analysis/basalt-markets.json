@@ -1,0 +1,41 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "basalt-markets",
+    "audits": [
+      {
+        "firm": "Sample Audit Co A",
+        "date": "2022-05-02",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co A, dated 2022-05-02. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/basalt-markets/audits"
+      },
+      {
+        "firm": "Sample Audit Co C",
+        "date": "2024-01-18",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co C, dated 2024-01-18. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/basalt-markets/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "timelock",
+      "quote": "The upgrades pass through a 72-hour timelock.",
+      "source": "https://example.org/sample/basalt-markets/docs"
+    },
+    "oracle": {
+      "provider": "Switchboard",
+      "quote": "Asset prices are read from the Switchboard oracle.",
+      "source": "https://example.org/sample/basalt-markets/docs"
+    },
+    "past_incidents": [
+      {
+        "date": "2023-04-12",
+        "summary": "A price feed update was delayed for about 40 minutes; no funds were lost.",
+        "source": "https://example.org/sample/basalt-markets/incidents"
+      }
+    ],
+    "notes": null
+  }
+}

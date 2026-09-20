@@ -1,0 +1,14 @@
+[
+  {
+    "source": "https://example.org/sample/basalt-markets/audits",
+    "text": "SAMPLE FIXTURE, NOT A REAL AUDIT.\nSecurity review by Sample Audit Co A, dated 2022-05-02. Critical findings unresolved: 0.\nSecurity review by Sample Audit Co C, dated 2024-01-18. Critical findings unresolved: 0."
+  },
+  {
+    "source": "https://example.org/sample/basalt-markets/docs",
+    "text": "SAMPLE FIXTURE. Basalt Markets (sample) documentation.\nThe upgrades pass through a 72-hour timelock.\nAsset prices are read from the Switchboard oracle."
+  },
+  {
+    "source": "https://example.org/sample/basalt-markets/incidents",
+    "text": "SAMPLE FIXTURE.\nIncident report (2023-04-12): A price feed update was delayed for about 40 minutes; no funds were lost."
+  }
+]

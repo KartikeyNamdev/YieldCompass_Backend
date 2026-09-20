@@ -1,0 +1,35 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "aurora-lend",
+    "audits": [
+      {
+        "firm": "Sample Audit Co A",
+        "date": "2023-02-10",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co A, dated 2023-02-10. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/aurora-lend/audits"
+      },
+      {
+        "firm": "Sample Audit Co B",
+        "date": "2024-06-21",
+        "critical_findings_unresolved": 0,
+        "quote": "Security review by Sample Audit Co B, dated 2024-06-21. Critical findings unresolved: 0.",
+        "source": "https://example.org/sample/aurora-lend/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "multisig",
+      "quote": "The upgrade authority is a 4-of-7 multisig.",
+      "source": "https://example.org/sample/aurora-lend/docs"
+    },
+    "oracle": {
+      "provider": "Pyth",
+      "quote": "Asset prices are read from the Pyth oracle.",
+      "source": "https://example.org/sample/aurora-lend/docs"
+    },
+    "past_incidents": [],
+    "notes": null
+  }
+}

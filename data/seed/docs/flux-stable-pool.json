@@ -1,0 +1,14 @@
+[
+  {
+    "source": "https://example.org/sample/flux-stable-pool/audits",
+    "text": "SAMPLE FIXTURE, NOT A REAL AUDIT.\nSecurity review by Sample Audit Co A, dated 2022-08-01. Critical findings unresolved: 0.\nSecurity review by Sample Audit Co D, dated 2024-04-15. Critical findings unresolved: 0."
+  },
+  {
+    "source": "https://example.org/sample/flux-stable-pool/docs",
+    "text": "SAMPLE FIXTURE. Flux Stable Pool (sample) documentation.\nThe upgrades pass through a 48-hour timelock.\nThe protocol does not describe its price source."
+  },
+  {
+    "source": "https://example.org/sample/flux-stable-pool/incidents",
+    "text": "SAMPLE FIXTURE.\nNo incidents have been reported."
+  }
+]

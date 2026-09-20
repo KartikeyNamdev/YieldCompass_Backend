@@ -1,0 +1,34 @@
+{
+  "generated_by": "fixture (hand-authored, validated against docs by tests; re-run precompute --live to replace)",
+  "dropped": [],
+  "extraction": {
+    "protocol_id": "delta-farm",
+    "audits": [
+      {
+        "firm": "Sample Audit Co D",
+        "date": "2024-08-20",
+        "critical_findings_unresolved": 2,
+        "quote": "Security review by Sample Audit Co D, dated 2024-08-20. Critical findings unresolved: 2.",
+        "source": "https://example.org/sample/delta-farm/audits"
+      }
+    ],
+    "upgrade_authority": {
+      "type": "single_key",
+      "quote": "The the program upgrade authority is a single key held by the team.",
+      "source": "https://example.org/sample/delta-farm/docs"
+    },
+    "oracle": {
+      "provider": "custom TWAP",
+      "quote": "Asset prices are read from the custom TWAP oracle.",
+      "source": "https://example.org/sample/delta-farm/docs"
+    },
+    "past_incidents": [
+      {
+        "date": "2025-01-14",
+        "summary": "A reward emission bug over-distributed tokens for one epoch before a patch.",
+        "source": "https://example.org/sample/delta-farm/incidents"
+      }
+    ],
+    "notes": null
+  }
+}

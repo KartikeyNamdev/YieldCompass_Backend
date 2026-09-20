@@ -1,0 +1,14 @@
+[
+  {
+    "source": "https://example.org/sample/ember-vault/audits",
+    "text": "SAMPLE FIXTURE, NOT A REAL AUDIT.\nSecurity review by Sample Audit Co C, dated 2023-10-01. Critical findings unresolved: 0."
+  },
+  {
+    "source": "https://example.org/sample/ember-vault/docs",
+    "text": "SAMPLE FIXTURE. Ember Vault (sample) documentation.\nThe upgrade authority is a 3-of-5 multisig.\nAsset prices are read from the Pyth oracle."
+  },
+  {
+    "source": "https://example.org/sample/ember-vault/incidents",
+    "text": "SAMPLE FIXTURE.\nNo incidents have been reported."
+  }
+]

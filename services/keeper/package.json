@@ -1,0 +1,20 @@
+{
+  "name": "@yc/keeper",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "demo": "node dist/demo.js"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/web3.js": "^1.98.0",
+    "@yc/shared": "*",
+    "bullmq": "^5.34.0",
+    "ioredis": "^5.4.0",
+    "@solana/spl-token": "^0.4.9"
+  }
+}

@@ -1,0 +1,394 @@
+{
+  "address": "13uN3ZYV2puWDXKCLYgxA5ZSYYnBky4cGnuvQDdmpW4B",
+  "metadata": {
+    "name": "mock_yield",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "DEVNET TEST DOUBLE: simulated yield source for YieldCompass. Not a real strategy."
+  },
+  "instructions": [
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "signer": true
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "from",
+          "writable": true
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_pool",
+      "docs": [
+        "Create a pool bound to one `depositor` (the vault's Series PDA)."
+      ],
+      "discriminator": [
+        116,
+        233,
+        199,
+        204,
+        115,
+        159,
+        171,
+        36
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "depositor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "reserve",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  115,
+                  101,
+                  114,
+                  118,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sink",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  105,
+                  110,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "depositor",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "simulate_loss",
+      "docs": [
+        "Move `bps` of the pool balance out to the sink account."
+      ],
+      "discriminator": [
+        36,
+        77,
+        242,
+        86,
+        114,
+        172,
+        88,
+        205
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "pool"
+          ]
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "reserve",
+          "writable": true
+        },
+        {
+          "name": "sink",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "simulate_yield",
+      "docs": [
+        "Move `bps` of the pool balance from the faucet reserve into the pool."
+      ],
+      "discriminator": [
+        218,
+        87,
+        103,
+        223,
+        193,
+        51,
+        91,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "pool"
+          ]
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "reserve",
+          "writable": true
+        },
+        {
+          "name": "sink",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_all",
+      "discriminator": [
+        96,
+        246,
+        166,
+        130,
+        229,
+        50,
+        43,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "signer": true
+        },
+        {
+          "name": "pool"
+        },
+        {
+          "name": "pool_vault",
+          "writable": true
+        },
+        {
+          "name": "to",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Pool",
+      "discriminator": [
+        241,
+        154,
+        109,
+        4,
+        17,
+        177,
+        109,
+        188
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6002,
+      "name": "InsufficientReserve",
+      "msg": "Faucet reserve too small"
+    },
+    {
+      "code": 6003,
+      "name": "MathOverflow",
+      "msg": "Math overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "Pool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "depositor",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve",
+            "type": "pubkey"
+          },
+          {
+            "name": "sink",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
