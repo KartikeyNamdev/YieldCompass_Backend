@@ -1,0 +1,24 @@
+# Production overlay for a single server. Use together with the base file:
+#   docker compose -f infra/docker-compose.yml -f infra/docker-compose.prod.yml up -d --build
+# Only Caddy (80/443) is reachable from the internet. Every other port is closed, in particular the keeper's faucet (4003),
+# which must only be reached through the API's rate limit.
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN, e.g. 203-0-113-10.sslip.io}
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy_data:/data", "caddy_config:/config"]
+    depends_on:
+      api: { condition: service_healthy }
+
+  api: { ports: !reset [] }
+  analytics: { ports: !reset [] }
+  ingestion: { ports: !reset [] }
+  indexer: { ports: !reset [] }
+  keeper: { ports: !reset [] }
+
+volumes:
+  caddy_data: {}
+  caddy_config: {}

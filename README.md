@@ -100,6 +100,23 @@ The admin key has no path to move vault funds. `refund` and `claim_*` do not rea
 Cost is roughly five 0.5c-512mb (Starter-class) instances. Delete the blueprint when the demo is over. Any VPS also works: `docker compose -f infra/docker-compose.yml up -d`
 behind a TLS proxy such as Caddy.
 
+## Deploy without Render
+
+**A. Any server (recommended, about $5 a month).** One Ubuntu VM with 2 GB RAM or more from any provider (DigitalOcean, Hetzner, Lightsail, GCP, Azure, Oracle free tier).
+`infra/docker-compose.prod.yml` adds Caddy for automatic HTTPS and closes every port except 80 and 443; no domain is needed because
+`<ip>.sslip.io` resolves to the server and Caddy gets a real certificate for it.
+
+```bash
+ssh root@SERVER_IP 'mkdir -p ~/YieldCompass_Backend'
+scp -r secrets root@SERVER_IP:~/YieldCompass_Backend/          # the three devnet keys
+ssh root@SERVER_IP
+curl -fsSL https://raw.githubusercontent.com/KartikeyNamdev/YieldCompass_Backend/main/scripts/vps-setup.sh | SOLANA_RPC_URL='https://devnet.helius-rpc.com/?api-key=...' bash
+```
+It prints the public URL. Put it in Vercel as `BACKEND_URL`.
+
+**B. Your laptop plus ngrok (no account with a card).** Keep the stack running (`docker compose -f infra/docker-compose.yml up -d`), run
+`ngrok http 4000` and use the tunnel URL as `BACKEND_URL`. The laptop must stay awake (`caffeinate -dimsu`) and online.
+
 ## Test-token faucet
 
 `POST /v1/faucet {address}` mints 1000 test stablecoins (and 0.05 devnet SOL when the wallet is nearly empty), once per hour per address.
