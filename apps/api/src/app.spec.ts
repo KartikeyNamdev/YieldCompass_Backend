@@ -154,6 +154,16 @@ describe("API (fake repositories)", () => {
       });
       expect(r.body.notes[0]).toMatch(/external protocols/);
     });
+    it("a cancelled series makes the principal refundable (claimable) until refunded", async () => {
+      const cancelled = { ...SERIES, id: "9", status: "cancelled" as const };
+      const spy = jest.spyOn(seriesRepo, "positions").mockResolvedValueOnce([
+        { series: cancelled, tranche: "junior", principal: 20n * D, claimed: false },
+        { series: cancelled, tranche: "senior", principal: 100n * D, claimed: true },
+      ]);
+      const r = await http().post("/v1/wallet/positions").send({ address: OWNER }).expect(200);
+      expect(r.body.positions.map((p: any) => [p.tranche, p.claimable])).toEqual([["junior", "20"], ["senior", "0"]]);
+      spy.mockRestore();
+    });
     it("empty wallet is fine; junk addresses are rejected", async () => {
       const r = await http().post("/v1/wallet/positions").send({ address: newAddress() }).expect(200);
       expect(r.body.positions).toEqual([]);
