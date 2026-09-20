@@ -1,6 +1,6 @@
 import { AnchorProvider, Idl, Program, Wallet } from "@coral-xyz/anchor";
 import { Connection, Keypair, PublicKey } from "@solana/web3.js";
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import mockYieldIdl from "./idl/mock_yield.json";
 import ycVaultIdl from "./idl/yc_vault.json";
 
@@ -8,6 +8,16 @@ export { ycVaultIdl, mockYieldIdl };
 
 export function loadKeypair(path: string): Keypair {
   return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(readFileSync(path, "utf8"))));
+}
+
+/**
+ * Load a keypair from an env var holding the JSON byte array (for hosts without secret files),
+ * else from a file. Returns null if neither is available. DEVNET KEYS ONLY.
+ */
+export function keypairFromEnvOrFile(jsonVar: string, filePath?: string): Keypair | null {
+  const json = process.env[jsonVar];
+  if (json) return Keypair.fromSecretKey(Uint8Array.from(JSON.parse(json)));
+  return filePath && existsSync(filePath) ? loadKeypair(filePath) : null;
 }
 
 export interface Programs {

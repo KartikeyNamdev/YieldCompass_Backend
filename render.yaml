@@ -1,0 +1,91 @@
+# Render Blueprint for the YieldCompass backend (devnet demo).
+# Render dashboard -> New -> Blueprint -> pick this repo. You will be asked for the values marked `sync: false`.
+# NOTE: written from Render's Blueprint spec but not validated against a live Render account.
+databases:
+  - name: yc-db
+    databaseName: yc
+    user: yc
+    plan: free # free Postgres expires after 30 days; switch to basic-256mb for anything longer
+
+envVarGroups:
+  - name: yc-chain
+    envVars:
+      - { key: DEMO_MODE, value: "true" } # seed data + cached analysis; the model is never called live
+      - { key: ANTHROPIC_MODEL, value: claude-fable-5-1 }
+      - { key: YC_VAULT_PROGRAM_ID, value: HoLewEAiPuRaJGJXfS4W6uuVRSeeAxC76VGxx3N4YNSW }
+      - { key: MOCK_YIELD_PROGRAM_ID, value: 13uN3ZYV2puWDXKCLYgxA5ZSYYnBky4cGnuvQDdmpW4B }
+      - { key: SOLANA_RPC_URL, sync: false } # a devnet RPC URL; a free Helius devnet key avoids public-RPC rate limits
+
+services:
+  - type: keyvalue
+    name: yc-redis
+    plan: free
+    maxmemoryPolicy: noeviction # required by BullMQ
+    ipAllowList: [] # private network only
+
+  - type: web
+    name: yc-api
+    runtime: docker
+    dockerfilePath: ./infra/api.Dockerfile
+    dockerContext: .
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - fromGroup: yc-chain
+      - { key: DATABASE_URL, fromDatabase: { name: yc-db, property: connectionString } }
+      - { key: REDIS_URL, fromService: { type: keyvalue, name: yc-redis, property: connectionString } }
+      - { key: ANALYTICS_URL, fromService: { type: pserv, name: yc-analytics, property: hostport } }
+      - { key: KEEPER_URL, fromService: { type: pserv, name: yc-keeper, property: hostport } }
+
+  - type: pserv
+    name: yc-analytics
+    runtime: docker
+    dockerfilePath: ./infra/analytics.Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - fromGroup: yc-chain
+      - { key: ANTHROPIC_API_KEY, sync: false } # only needed with DEMO_MODE=false
+
+  - type: pserv # private service: it also serves the faucet on its port
+    name: yc-keeper
+    runtime: docker
+    dockerfilePath: ./infra/keeper.Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - fromGroup: yc-chain
+      - { key: PORT, value: "4003" }
+      - { key: DATABASE_URL, fromDatabase: { name: yc-db, property: connectionString } }
+      - { key: REDIS_URL, fromService: { type: keyvalue, name: yc-redis, property: connectionString } }
+      - { key: ANALYTICS_URL, fromService: { type: pserv, name: yc-analytics, property: hostport } }
+      # devnet-only keypairs: paste the JSON array from secrets/keeper.json, secrets/risk.json, secrets/admin.json
+      - { key: KEEPER_KEYPAIR_JSON, sync: false }
+      - { key: RISK_AUTHORITY_KEYPAIR_JSON, sync: false }
+      - { key: FAUCET_AUTHORITY_KEYPAIR_JSON, sync: false } # = the admin key (mint authority of the test token)
+      - { key: FAUCET_MINT, sync: false } # the test mint printed by `demo.js bootstrap`
+      - { key: FAUCET_TOKENS, value: "1000" }
+      - { key: FAUCET_SOL_DRIP, value: "0.05" }
+      - { key: FAUCET_COOLDOWN_SECS, value: "3600" }
+
+  - type: worker
+    name: yc-ingestion
+    runtime: docker
+    dockerfilePath: ./infra/ingestion.Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - fromGroup: yc-chain
+      - { key: DATABASE_URL, fromDatabase: { name: yc-db, property: connectionString } }
+      - { key: REDIS_URL, fromService: { type: keyvalue, name: yc-redis, property: connectionString } }
+      - { key: ANALYTICS_URL, fromService: { type: pserv, name: yc-analytics, property: hostport } }
+
+  - type: worker
+    name: yc-indexer
+    runtime: docker
+    dockerfilePath: ./infra/indexer.Dockerfile
+    dockerContext: .
+    plan: starter
+    envVars:
+      - fromGroup: yc-chain
+      - { key: DATABASE_URL, fromDatabase: { name: yc-db, property: connectionString } }

@@ -1,11 +1,12 @@
 import { Queue, Worker } from "bullmq";
 import { Connection } from "@solana/web3.js";
 import IORedis from "ioredis";
-import { existsSync } from "fs";
 import { resolve } from "path";
 import {
-  DEFAULT_JOB_OPTIONS, PublishRiskJob, QUEUES, createPool, env, getPrograms, loadKeypair, runMigrations, startHealthServer,
+  DEFAULT_JOB_OPTIONS, PublishRiskJob, QUEUES, createPool, env, getPrograms, keypairFromEnvOrFile, runMigrations, startHealthServer,
 } from "@yc/shared";
+import { PublicKey } from "@solana/web3.js";
+import { faucetRoute, FaucetDeps } from "./faucet";
 import { dueForRefresh, publishRisk } from "./publishRisk";
 import { settleMatured } from "./settle";
 
@@ -13,18 +14,31 @@ async function main() {
   const pool = createPool();
   await runMigrations(pool, process.env.MIGRATIONS_DIR ?? resolve(__dirname, "../../../migrations"));
   const state: Record<string, unknown> = { chain_enabled: false, last_settle_scan: null, last_settled: 0 };
-  const health = startHealthServer("keeper", Number(process.env.PORT ?? 4003), () => state);
-
+  // keys come from JSON env vars (hosted) or files (docker compose / local); devnet keys only
   const keeperPath = env("KEEPER_KEYPAIR_PATH", "/run/secrets/keeper.json");
   const riskPath = env("RISK_AUTHORITY_KEYPAIR_PATH", "/run/secrets/risk.json");
-  if (!existsSync(keeperPath) || !existsSync(riskPath)) {
+  const keeper = keypairFromEnvOrFile("KEEPER_KEYPAIR_JSON", keeperPath);
+  const riskAuthority = keypairFromEnvOrFile("RISK_AUTHORITY_KEYPAIR_JSON", riskPath);
+  const connection = new Connection(env("SOLANA_RPC_URL"), "confirmed");
+
+  // optional test-token faucet (needs the mint authority key and the mint address)
+  let faucet: FaucetDeps | null = null;
+  const faucetAuthority = keypairFromEnvOrFile("FAUCET_AUTHORITY_KEYPAIR_JSON", process.env.FAUCET_AUTHORITY_KEYPAIR_PATH ?? "/run/secrets/admin.json");
+  if (keeper && faucetAuthority && process.env.FAUCET_MINT) {
+    faucet = {
+      db: pool, conn: connection, payer: keeper, authority: faucetAuthority, mint: new PublicKey(process.env.FAUCET_MINT),
+      tokens: Number(process.env.FAUCET_TOKENS ?? 1000), solDrip: Number(process.env.FAUCET_SOL_DRIP ?? 0.05),
+      cooldownSecs: Number(process.env.FAUCET_COOLDOWN_SECS ?? 3600),
+    };
+  }
+  state.faucet_enabled = faucet !== null;
+  const health = startHealthServer("keeper", Number(process.env.PORT ?? 4003), () => state, faucet ? faucetRoute(faucet) : undefined);
+
+  if (!keeper || !riskAuthority) {
     // Keep the container healthy so `docker compose up` works out of the box; on-chain duties stay off.
-    console.warn(`[keeper] devnet keypairs not found (${keeperPath}, ${riskPath}); on-chain duties disabled. Run scripts/gen-devnet-keys.sh`);
+    console.warn(`[keeper] devnet keypairs not found; on-chain duties disabled. Run scripts/gen-devnet-keys.sh`);
     return;
   }
-  const keeper = loadKeypair(keeperPath);
-  const riskAuthority = loadKeypair(riskPath);
-  const connection = new Connection(env("SOLANA_RPC_URL"), "confirmed");
   const settlePrograms = getPrograms(connection, keeper);
   const riskPrograms = getPrograms(connection, riskAuthority);
   state.chain_enabled = true;

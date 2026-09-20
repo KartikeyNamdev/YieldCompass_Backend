@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import bs58 from "bs58";
 import { randomBytes } from "crypto";
 import request from "supertest";
+import { FaucetController } from "./faucet/faucet.controller";
 import { HealthController } from "./health/health.controller";
 import { CacheService } from "./infra/cache.service";
 import { PoolSummary } from "./lib/ranking";
@@ -54,7 +55,7 @@ describe("API (fake repositories)", () => {
   beforeAll(async () => {
     const mod = await Test.createTestingModule({
       imports: [ThrottlerModule.forRoot([{ ttl: 60_000, limit: 1000 }])],
-      controllers: [HealthController, PoolsController, RiskController, SeriesController, WalletController],
+      controllers: [HealthController, PoolsController, RiskController, SeriesController, WalletController, FaucetController],
       providers: [
         { provide: PoolsRepo, useValue: poolsRepo }, { provide: SeriesRepo, useValue: seriesRepo },
         { provide: CacheService, useValue: { wrap: (_k: string, _t: number, f: () => unknown) => f() } },
@@ -157,6 +158,35 @@ describe("API (fake repositories)", () => {
       const r = await http().post("/v1/wallet/positions").send({ address: newAddress() }).expect(200);
       expect(r.body.positions).toEqual([]);
       for (const address of ["", "not-a-key", "1".repeat(33), "0x" + "a".repeat(40)]) await http().post("/v1/wallet/positions").send({ address }).expect(400);
+    });
+  });
+
+  describe("faucet", () => {
+    const spy = () => jest.spyOn(global, "fetch");
+    afterEach(() => jest.restoreAllMocks());
+
+    it("forwards a valid address to the keeper and passes the result through", async () => {
+      const f = spy().mockResolvedValue(new Response(JSON.stringify({ signature: "sig", tokens: 1000, sol: 0.05 }), { status: 200 }));
+      const address = newAddress();
+      const r = await http().post("/v1/faucet").send({ address }).expect(200);
+      expect(r.body).toMatchObject({ signature: "sig", tokens: 1000 });
+      expect(r.body.disclaimer).toContain("Devnet test tokens");
+      expect(String(f.mock.calls[0][0])).toMatch(/\/faucet$/);
+      expect(JSON.parse((f.mock.calls[0][1] as RequestInit).body as string)).toEqual({ address });
+    });
+    it("never reaches the keeper for junk addresses", async () => {
+      const f = spy();
+      for (const address of ["", "nope", 5]) await http().post("/v1/faucet").send({ address }).expect(400);
+      expect(f).not.toHaveBeenCalled();
+    });
+    it("relays the cooldown and hides keeper failures", async () => {
+      spy().mockResolvedValueOnce(new Response(JSON.stringify({ error: "faucet cooldown", retry_after_secs: 900 }), { status: 429 }));
+      const r = await http().post("/v1/faucet").send({ address: newAddress() }).expect(429);
+      expect(r.body).toMatchObject({ retry_after_secs: 900 });
+      spy().mockRejectedValueOnce(new Error("ECONNREFUSED"));
+      await http().post("/v1/faucet").send({ address: newAddress() }).expect(503);
+      spy().mockResolvedValueOnce(new Response("{}", { status: 404 }));
+      await http().post("/v1/faucet").send({ address: newAddress() }).expect(503);
     });
   });
 

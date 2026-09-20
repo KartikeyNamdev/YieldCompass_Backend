@@ -87,6 +87,24 @@ The keeper publishes entries with a 24h expiry when a score changes, **and re-pu
 Every submission goes through an idempotency key in `tx_log`, so retries and concurrent workers cannot double-submit.
 The admin key has no path to move vault funds. `refund` and `claim_*` do not read `Config`, so pausing cannot block them.
 
+## Deploy the backend (Render)
+
+`render.yaml` describes everything: Postgres, Redis, the API (public), and analytics, keeper, ingestion and indexer (private).
+
+1. Render dashboard, New, Blueprint, pick this repo.
+2. Fill the prompts: `SOLANA_RPC_URL` (devnet), `FAUCET_MINT` (the test mint from `demo.js bootstrap`), and paste the JSON arrays of
+   `secrets/keeper.json`, `secrets/risk.json`, `secrets/admin.json` into `KEEPER_KEYPAIR_JSON`, `RISK_AUTHORITY_KEYPAIR_JSON`,
+   `FAUCET_AUTHORITY_KEYPAIR_JSON`. Devnet keys only.
+3. The public API is `https://yc-api.onrender.com` (or the URL Render shows). Use it as `BACKEND_URL` in the frontend.
+
+Cost is roughly five starter instances. Delete the blueprint when the demo is over. Any VPS also works: `docker compose -f infra/docker-compose.yml up -d`
+behind a TLS proxy such as Caddy.
+
+## Test-token faucet
+
+`POST /v1/faucet {address}` mints 1000 test stablecoins (and 0.05 devnet SOL when the wallet is nearly empty), once per hour per address.
+The API only forwards the request; the keeper holds the mint authority. Devnet test tokens only.
+
 ## Demo on-chain cycle (local validator or devnet)
 
 ```bash

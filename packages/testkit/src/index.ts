@@ -21,7 +21,7 @@ export interface SeriesHandle {
   deadline: number;
 }
 
-export async function bootstrap(conn: Connection) {
+export async function bootstrap(conn: Connection, opts: { initConfig?: boolean } = {}) {
   const [admin, riskAuth, keeper, alice, bob, carol] = Array.from({ length: 6 }, () => Keypair.generate());
   for (const k of [admin, riskAuth, keeper, alice, bob, carol]) {
     await conn.confirmTransaction(await conn.requestAirdrop(k.publicKey, 5 * LAMPORTS_PER_SOL), "confirmed");
@@ -32,7 +32,10 @@ export async function bootstrap(conn: Connection) {
   const mint = await createMint(conn, admin, admin.publicKey, null, 6);
   const ata = async (owner: Keypair, m: PublicKey) => (await getOrCreateAssociatedTokenAccount(conn, owner, m, owner.publicKey)).address;
   for (const u of [alice, bob, carol]) await mintTo(conn, admin, mint, await ata(u, mint), admin, 1000 * D);
-  await A.vault.methods.initConfig(admin.publicKey, riskAuth.publicKey).accountsPartial({ payer: admin.publicKey, config: p.config() }).rpc();
+  // Config is a global PDA: suites that share a validator and do not need it can skip it
+  if (opts.initConfig !== false) {
+    await A.vault.methods.initConfig(admin.publicKey, riskAuth.publicKey).accountsPartial({ payer: admin.publicKey, config: p.config() }).rpc();
+  }
 
   const accounts = (prog: "vault" | "mock") => (A[prog].account as any);
   const sub = (tag: string, base: PublicKey, prog: PublicKey) => PublicKey.findProgramAddressSync([Buffer.from(tag), base.toBuffer()], prog)[0];

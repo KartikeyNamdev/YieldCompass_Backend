@@ -1,4 +1,4 @@
-import { sleep } from "@yc/shared";
+import { normalizeUrl, sleep } from "@yc/shared";
 
 export class HttpError extends Error {
   constructor(public status: number, message: string) {
@@ -14,11 +14,15 @@ export interface RetryOpts {
 
 /** JSON client for the analytics service. Retries network errors, 429 and 5xx with exponential backoff. */
 export class AnalyticsClient {
+  private baseUrl: string;
+
   constructor(
-    private baseUrl: string,
+    baseUrl: string,
     private fetchImpl: typeof fetch = fetch,
     private opts: RetryOpts = {},
-  ) {}
+  ) {
+    this.baseUrl = normalizeUrl(baseUrl);
+  }
 
   async post<T>(path: string, body: unknown): Promise<T> {
     const { retries = 4, baseDelayMs = 500, timeoutMs = 20_000 } = this.opts;

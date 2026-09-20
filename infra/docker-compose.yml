@@ -19,24 +19,23 @@ services:
     healthcheck: { test: ["CMD", "redis-cli", "ping"], interval: 3s, timeout: 3s, retries: 20 }
 
   analytics:
-    build: ../services/analytics
+    build: { context: .., dockerfile: infra/analytics.Dockerfile }
     ports: ["8000:8000"]
     env_file: ../.env
-    environment: { SEED_DIR: /app/data/seed }
-    volumes: ["../data/seed:/app/data/seed:ro"]
     depends_on: { redis: { condition: service_healthy }, postgres: { condition: service_healthy } }
     healthcheck: { test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/health')"], interval: 5s, timeout: 3s, retries: 20 }
 
   api:
     <<: *node
-    build: { context: .., dockerfile: infra/node.Dockerfile, args: { WORKSPACE: "@yc/api", APP_DIR: apps/api } }
+    environment: { DATABASE_URL: "postgres://yc:yc@postgres:5432/yc", REDIS_URL: "redis://redis:6379", ANALYTICS_URL: "http://analytics:8000", KEEPER_URL: "http://keeper:4003" }
+    build: { context: .., dockerfile: infra/api.Dockerfile }
     ports: ["4000:4000"]
     depends_on: { redis: { condition: service_healthy }, postgres: { condition: service_healthy }, analytics: { condition: service_healthy } }
     healthcheck: { test: ["CMD", "node", "-e", "fetch('http://localhost:4000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"], interval: 5s, timeout: 3s, retries: 20 }
 
   ingestion:
     <<: *node
-    build: { context: .., dockerfile: infra/node.Dockerfile, args: { WORKSPACE: "@yc/ingestion", APP_DIR: services/ingestion, ENTRY: dist/index.js } }
+    build: { context: .., dockerfile: infra/ingestion.Dockerfile }
     ports: ["4001:4001"]
     environment: { DATABASE_URL: "postgres://yc:yc@postgres:5432/yc", REDIS_URL: "redis://redis:6379", ANALYTICS_URL: "http://analytics:8000", PORT: "4001", SEED_DIR: /repo/data/seed }
     depends_on: { redis: { condition: service_healthy }, postgres: { condition: service_healthy }, analytics: { condition: service_healthy } }
@@ -44,7 +43,7 @@ services:
 
   indexer:
     <<: *node
-    build: { context: .., dockerfile: infra/node.Dockerfile, args: { WORKSPACE: "@yc/indexer", APP_DIR: services/indexer, ENTRY: dist/index.js } }
+    build: { context: .., dockerfile: infra/indexer.Dockerfile }
     ports: ["4002:4002"]
     environment: { DATABASE_URL: "postgres://yc:yc@postgres:5432/yc", PORT: "4002" }
     depends_on: { postgres: { condition: service_healthy } }
@@ -52,9 +51,9 @@ services:
 
   keeper:
     <<: *node
-    build: { context: .., dockerfile: infra/node.Dockerfile, args: { WORKSPACE: "@yc/keeper", APP_DIR: services/keeper, ENTRY: dist/index.js } }
+    build: { context: .., dockerfile: infra/keeper.Dockerfile }
     ports: ["4003:4003"]
-    environment: { DATABASE_URL: "postgres://yc:yc@postgres:5432/yc", REDIS_URL: "redis://redis:6379", ANALYTICS_URL: "http://analytics:8000", PORT: "4003" }
+    environment: { DATABASE_URL: "postgres://yc:yc@postgres:5432/yc", REDIS_URL: "redis://redis:6379", ANALYTICS_URL: "http://analytics:8000", PORT: "4003", FAUCET_AUTHORITY_KEYPAIR_PATH: /run/secrets/admin.json }
     volumes: ["../secrets:/run/secrets:ro"] # devnet-only keypairs; missing keys => keeper stays healthy with on-chain duties off
     depends_on: { redis: { condition: service_healthy }, postgres: { condition: service_healthy } }
     healthcheck: { test: ["CMD", "node", "-e", "fetch('http://localhost:4003/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"], interval: 5s, timeout: 3s, retries: 20 }
