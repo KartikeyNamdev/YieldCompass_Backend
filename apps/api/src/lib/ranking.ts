@@ -15,6 +15,8 @@ export interface PoolSummary {
   mostly_bonus_tokens: boolean;
   gap: { advertised: number | null; realized: number | null; gap_points: number | null };
   tvl_usd: number;
+  /** daily average headline APY over the last 30 days, oldest first (decimal fractions) */
+  sparkline_30d: number[];
   risk_score: number | null;
   sustainable_realized_apy: number | null;
   risk_adjusted_yield: number | null;
@@ -27,8 +29,8 @@ export interface PoolSummary {
  * With exponent 1 this is exactly the spec's `realized_apy x risk_score / 100` (using the emissions-haircut adjusted realized APY).
  */
 export const PROFILES: Record<Profile, { minScore: number; maxEmissionsShare: number; exponent: number; description: string }> = {
-  conservative: { minScore: 65, maxEmissionsShare: 0.5, exponent: 2, description: "Risk score >= 65, no pools that are mostly bonus tokens, risk weighted twice" },
-  balanced: { minScore: 40, maxEmissionsShare: 1, exponent: 1, description: "Risk score >= 40, ranked by realized APY x risk score / 100" },
+  conservative: { minScore: 75, maxEmissionsShare: 0.5, exponent: 2, description: "Risk score >= 75, no pools that are mostly bonus tokens, risk weighted twice" },
+  balanced: { minScore: 55, maxEmissionsShare: 1, exponent: 1, description: "Risk score >= 55, ranked by realized APY x risk score / 100" },
   aggressive: { minScore: 0, maxEmissionsShare: 1, exponent: 0.5, description: "All pools, risk weighted lightly" },
 };
 

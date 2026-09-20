@@ -20,7 +20,7 @@ const T = "2026-01-01T00:00:00.000Z";
 const pool = (o: Partial<PoolSummary> & { id: string }): PoolSummary => ({
   name: o.id, category: "lending", chain: "solana", data_source: "seed-synthetic", headline_apy: 0.08, realized_apy_7d: 0.05,
   realized_apy_30d: 0.05, realized_basis: "share_rate", emissions_share: 0.1, mostly_bonus_tokens: false,
-  gap: { advertised: 0.08, realized: 0.05, gap_points: 0.03 }, tvl_usd: 1e8, risk_score: 80, sustainable_realized_apy: 0.05,
+  gap: { advertised: 0.08, realized: 0.05, gap_points: 0.03 }, tvl_usd: 1e8, sparkline_30d: [], risk_score: 80, sustainable_realized_apy: 0.05,
   risk_adjusted_yield: 0.04, updated_at: T, ...o,
 });
 const POOLS = [
@@ -31,7 +31,7 @@ const SERIES: SeriesRow = {
   id: "7", pubkey: "SeriesPubkey", status: "settled", rate_bps: 200, term_secs: 180, decimals: 6, senior_principal: 100n * D, junior_principal: 20n * D,
   senior_payout: 100_000_011n, junior_payout: 27_199_989n, min_junior_bps: 1000, min_risk_score: 60, deposit_deadline: new Date("2026-01-01"),
   start_ts: new Date("2026-01-01"), maturity_ts: new Date("2026-01-01T00:03:00Z"), underlying_mint: "m", senior_mint: "sm", junior_mint: "jm",
-  vault: "v", strategy_pool: "sp", risk_entry: "re", updated_at: new Date(T),
+  vault: "v", strategy_pool: "sp", risk_entry: "re", protocol_id: "safe", risk_score: 90, risk_expires_at: new Date("2026-01-02"), created_at: new Date(T), updated_at: new Date(T),
 };
 const newAddress = () => bs58.encode(randomBytes(32));
 const OWNER = newAddress();
@@ -119,6 +119,9 @@ describe("API (fake repositories)", () => {
       expect(l.body.disclaimer).toBe("Target rate, not guaranteed. Devnet prototype. Informational only, not financial advice.");
       const g = await http().get("/v1/series/7").expect(200);
       expect(g.body.updated_at).toBe(T);
+      expect(g.body).toMatchObject({ protocol_id: "safe", risk_score: 90, senior_capacity: "180", junior_needed: "11.111111", created_at: T });
+      expect(g.body.realized_period_return).toBeCloseTo(0.06, 4);
+      expect(g.body.realized_apy).toBeNull(); // 3 minute term: never annualised
       await http().get("/v1/series/999").expect(404);
       for (const bad of ["abc", "-1", "01", "18446744073709551616"]) await http().get(`/v1/series/${bad}`).expect(400);
     });
@@ -145,7 +148,7 @@ describe("API (fake repositories)", () => {
     it("shows advertised vs realized for a settled position", async () => {
       const r = await http().post("/v1/wallet/positions").send({ address: OWNER }).expect(200);
       expect(r.body.positions[0]).toMatchObject({
-        series_id: "7", tranche: "senior", principal: "100", claimed: false,
+        series_id: "7", tranche: "senior", principal: "100", claimed: false, claimable: "100.000011",
         advertised: { target_rate_bps: 200 }, realized: { payout: "100.000011", annualized: null },
       });
       expect(r.body.notes[0]).toMatch(/external protocols/);

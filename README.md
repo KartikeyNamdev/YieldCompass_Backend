@@ -64,7 +64,7 @@ scripts/e2e-keeper.sh                              # keeper + indexer against a 
 Rates are decimal fractions (0.05 = 5%). Token amounts are decimal strings.
 
 **Profiles** change eligibility and weighting. Ranked value = `sustainable_realized_apy x (risk_score/100)^k`:
-conservative (score >= 65, no "mostly bonus tokens", k=2), balanced (score >= 40, k=1), aggressive (all, k=0.5).
+conservative (score >= 75, no "mostly bonus tokens", k=2), balanced (score >= 55, k=1), aggressive (all, k=0.5).
 Excluded pools are listed with a reason rather than silently dropped.
 
 ## How the numbers are made

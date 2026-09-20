@@ -30,13 +30,26 @@ export class PoolsRepo {
   constructor(@Inject(PG) private db: Db) {}
 
   async listPools(): Promise<PoolSummary[]> {
-    const { rows } = await this.db.query(POOL_SQL + " ORDER BY p.id");
-    return rows.map(toSummary);
+    const [{ rows }, spark] = await Promise.all([this.db.query(POOL_SQL + " ORDER BY p.id"), this.sparklines()]);
+    return rows.map((r) => toSummary(r, spark.get(r.id as string)));
   }
 
   async getPool(id: string): Promise<PoolSummary | null> {
-    const { rows } = await this.db.query(POOL_SQL + " WHERE p.id = $1", [id]);
-    return rows[0] ? toSummary(rows[0]) : null;
+    const [{ rows }, spark] = await Promise.all([this.db.query(POOL_SQL + " WHERE p.id = $1", [id]), this.sparklines()]);
+    return rows[0] ? toSummary(rows[0], spark.get(id)) : null;
+  }
+
+  /** Daily average headline APY for the last 30 days per protocol. */
+  private async sparklines(): Promise<Map<string, number[]>> {
+    const { rows } = await this.db.query(
+      `SELECT protocol_id, array_agg(v ORDER BY d) AS pts FROM (
+         SELECT s.protocol_id, date_trunc('day', s.ts) AS d, avg(s.apy_headline) AS v
+           FROM pool_snapshots s
+          WHERE s.apy_headline IS NOT NULL
+            AND s.ts >= (SELECT max(ts) FROM pool_snapshots m WHERE m.protocol_id = s.protocol_id) - interval '30 days'
+          GROUP BY 1, 2) t GROUP BY protocol_id`,
+    );
+    return new Map(rows.map((r) => [r.protocol_id as string, (r.pts as string[]).map(Number)]));
   }
 
   async getRisk(id: string): Promise<RiskDetail | null> {
@@ -73,7 +86,7 @@ SELECT p.id, p.name, p.category, p.chain, p.synthetic,
   LEFT JOIN realized_apy r30 ON r30.protocol_id = p.id AND r30.window_days = 30
   LEFT JOIN risk_scores k ON k.protocol_id = p.id`;
 
-export function toSummary(r: Record<string, unknown>): PoolSummary {
+export function toSummary(r: Record<string, unknown>, sparkline: number[] = []): PoolSummary {
   const headline = n(r.apy_headline);
   const r30 = n(r.realized_30d);
   const sustainable = n(r.sustainable_realized_apy);
@@ -93,6 +106,7 @@ export function toSummary(r: Record<string, unknown>): PoolSummary {
     mostly_bonus_tokens: (share ?? 0) > 0.5,
     gap: { advertised: headline, realized: r30, gap_points: headline !== null && r30 !== null ? headline - r30 : null },
     tvl_usd: Number(r.tvl_usd),
+    sparkline_30d: sparkline,
     risk_score: score,
     sustainable_realized_apy: sustainable,
     risk_adjusted_yield: sustainable !== null && score !== null ? sustainable * (score / 100) : null,

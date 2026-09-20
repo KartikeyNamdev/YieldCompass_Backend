@@ -13,6 +13,13 @@ const SERIES_TTL = 10;
 export function presentSeries(s: SeriesRow, now = Date.now()) {
   const fmt = (v: bigint) => fromBaseUnits(v, s.decimals);
   const owed = seniorOwed(s.senior_principal, s.rate_bps, BigInt(s.term_secs));
+  const totalIn = s.senior_principal + s.junior_principal;
+  const settled = s.status === "settled" && totalIn > 0n;
+  const periodReturn = settled ? Number(s.senior_payout + s.junior_payout - totalIn) / Number(totalIn) : null;
+  // largest senior tranche the current junior buffer supports: junior * (10000 - min) / min
+  const seniorCapacity = (s.junior_principal * BigInt(10_000 - s.min_junior_bps)) / BigInt(s.min_junior_bps);
+  // junior needed to back the current senior tranche
+  const juniorNeeded = (s.senior_principal * BigInt(s.min_junior_bps)) / BigInt(10_000 - s.min_junior_bps);
   return {
     id: s.id,
     pubkey: s.pubkey,
@@ -31,6 +38,16 @@ export function presentSeries(s: SeriesRow, now = Date.now()) {
     junior_payout: s.status === "settled" ? fmt(s.junior_payout) : null,
     min_junior_bps: s.min_junior_bps,
     min_risk_score: s.min_risk_score,
+    senior_capacity: fmt(seniorCapacity),
+    junior_needed: fmt(juniorNeeded),
+    protocol_id: s.protocol_id,
+    risk_score: s.risk_score,
+    risk_expires_at: s.risk_expires_at?.toISOString() ?? null,
+    // period return of the whole series; annualised only when the term is at least a week
+    realized_period_return: periodReturn,
+    realized_apy: periodReturn !== null && s.term_secs >= 7 * 86_400 ? Math.pow(1 + periodReturn, (365 * 86_400) / s.term_secs) - 1 : null,
+    settled_at: settled ? s.updated_at.toISOString() : null,
+    created_at: s.created_at.toISOString(),
     addresses: {
       underlying_mint: s.underlying_mint, senior_mint: s.senior_mint, junior_mint: s.junior_mint,
       vault: s.vault, strategy_pool: s.strategy_pool, risk_entry: s.risk_entry,

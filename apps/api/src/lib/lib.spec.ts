@@ -6,7 +6,7 @@ import { fromBaseUnits, toBaseUnits } from "./units";
 const pool = (o: Partial<PoolSummary> & { id: string }): PoolSummary => ({
   name: o.id, category: "lending", chain: "solana", data_source: "seed-synthetic", headline_apy: 0.08, realized_apy_7d: 0.05,
   realized_apy_30d: 0.05, realized_basis: "share_rate", emissions_share: 0.1, mostly_bonus_tokens: false,
-  gap: { advertised: 0.08, realized: 0.05, gap_points: 0.03 }, tvl_usd: 1e8, risk_score: 80, sustainable_realized_apy: 0.05,
+  gap: { advertised: 0.08, realized: 0.05, gap_points: 0.03 }, tvl_usd: 1e8, sparkline_30d: [], risk_score: 80, sustainable_realized_apy: 0.05,
   risk_adjusted_yield: 0.04, updated_at: "2026-01-01T00:00:00.000Z", ...o,
 });
 
@@ -19,14 +19,14 @@ describe("rankPools", () => {
 
   it("conservative excludes low-score, bonus-token and unscored pools, with reasons", () => {
     const { included, excluded } = rankPools(all, "conservative", "risk_adjusted");
-    expect(included.map((p) => p.id)).toEqual(["safe", "mid"]);
-    expect(excluded.map((e) => e.id).sort()).toEqual(["degen", "unscored"]);
+    expect(included.map((p) => p.id)).toEqual(["safe"]);
+    expect(excluded.map((e) => e.id).sort()).toEqual(["degen", "mid", "unscored"]);
     expect(excluded.find((e) => e.id === "degen")!.reason).toMatch(/below the conservative minimum/);
   });
 
   it("the profile changes the ranking, not just the filter", () => {
-    // conservative weights risk twice: safe 0.05*.81=.0405 vs mid 0.07*.49=.0343
-    expect(rankPools(all, "conservative", "risk_adjusted").included[0].id).toBe("safe");
+    // conservative admits only score >= 75 (mid at 70 is out) and weights risk twice
+    expect(rankPools(all, "conservative", "risk_adjusted").included.map((p) => p.id)).toEqual(["safe"]);
     // balanced: safe 0.05*.9=.045 vs mid 0.07*.7=.049
     expect(rankPools(all, "balanced", "risk_adjusted").included[0].id).toBe("mid");
     // aggressive keeps degen: 0.23*sqrt(.28)=.1217 beats both

@@ -18,6 +18,10 @@ export interface SeriesRow extends SeriesFacts {
   vault: string;
   strategy_pool: string;
   risk_entry: string;
+  protocol_id: string | null;
+  risk_score: number | null;
+  risk_expires_at: Date | null;
+  created_at: Date;
   updated_at: Date;
 }
 
@@ -35,7 +39,8 @@ export function toSeries(r: Record<string, any>): SeriesRow {
     junior_payout: big(r.junior_payout), min_junior_bps: r.min_junior_bps, min_risk_score: r.min_risk_score,
     deposit_deadline: date(r.deposit_deadline), start_ts: date(r.start_ts), maturity_ts: date(r.maturity_ts),
     underlying_mint: r.underlying_mint, senior_mint: r.senior_mint, junior_mint: r.junior_mint, vault: r.vault,
-    strategy_pool: r.strategy_pool, risk_entry: r.risk_entry, updated_at: new Date(r.updated_at),
+    strategy_pool: r.strategy_pool, risk_entry: r.risk_entry, protocol_id: r.protocol_id ?? null, risk_score: r.risk_score ?? null,
+    risk_expires_at: date(r.risk_expires_at), created_at: new Date(r.created_at ?? r.updated_at), updated_at: new Date(r.updated_at),
   };
 }
 

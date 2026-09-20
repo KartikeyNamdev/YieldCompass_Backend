@@ -50,6 +50,7 @@ export class WalletController {
         status: s.status,
         principal: fmt(p.principal),
         claimed: p.claimed,
+        claimable: settled && !p.claimed ? fmt(payout ?? 0n) : "0",
         advertised: p.tranche === "senior" ? { target_rate_bps: s.rate_bps, kind: "target, not guaranteed" } : { kind: "variable, first-loss" },
         realized: settled
           ? {

@@ -1,5 +1,6 @@
 import { Controller, Get, NotFoundException, Param, Query } from "@nestjs/common";
 import { CacheService } from "../infra/cache.service";
+import { dailyLast, withRealized } from "../lib/history";
 import { ProtocolIdPipe } from "../lib/pipes";
 import { PROFILES, rankPools } from "../lib/ranking";
 import { HistoryQuery, ListPoolsQuery } from "./pools.dto";
@@ -55,8 +56,13 @@ export class PoolsController {
   history(@Param("id", new ProtocolIdPipe()) id: string, @Query() q: HistoryQuery) {
     const window = q.window ?? "30d";
     return this.cache.wrap(`history:${id}:${window}`, POOLS_TTL, async () => {
-      const points = await this.repo.history(id, window === "7d" ? 7 : 30);
-      if (points.length === 0) throw new NotFoundException(`no history for ${id}`);
+      const days = window === "7d" ? 7 : 30;
+      // fetch a week of lead-in so the rolling 7d realized APY exists for the first charted day
+      const raw = await this.repo.history(id, days + 7);
+      if (raw.length === 0) throw new NotFoundException(`no history for ${id}`);
+      const daily = withRealized(dailyLast(raw));
+      const end = new Date(daily[daily.length - 1].ts).getTime();
+      const points = daily.filter((p) => new Date(p.ts).getTime() >= end - days * 86_400_000);
       return { protocol_id: id, window, points, updated_at: points[points.length - 1].ts };
     });
   }

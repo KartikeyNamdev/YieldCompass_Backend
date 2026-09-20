@@ -1,7 +1,7 @@
 import { BorshCoder, EventParser } from "@coral-xyz/anchor";
 import { getMint } from "@solana/spl-token";
 import { Connection, PublicKey } from "@solana/web3.js";
-import { statusName, ycVaultIdl } from "@yc/shared";
+import { protocolIdFromBytes, statusName, ycVaultIdl } from "@yc/shared";
 import type { Programs } from "@yc/shared";
 import type { Pool } from "pg";
 
@@ -24,6 +24,7 @@ export interface DecodedEvent {
 export class Indexer {
   private parser: EventParser;
   private decimals = new Map<string, number>();
+  private riskCache = new Map<string, { protocolId: string; score: number; expiresAt: number } | null>();
 
   constructor(private db: Pool, private programs: Programs) {
     this.parser = new EventParser(programs.vault.programId, new BorshCoder(ycVaultIdl as never));
@@ -44,31 +45,55 @@ export class Indexer {
     return this.decimals.get(k)!;
   }
 
-  async upsertSeries(pubkey: PublicKey, a: any): Promise<void> {
+  /** The gating RiskEntry: which protocol it scores, the score, and when it expires. Null if unreadable. */
+  private async readRisk(entry: PublicKey): Promise<{ protocolId: string; score: number; expiresAt: number } | null> {
+    try {
+      const r = await (this.programs.vault.account as any).riskEntry.fetch(entry);
+      return { protocolId: protocolIdFromBytes(r.protocolId), score: r.score, expiresAt: r.expiresAt.toNumber() };
+    } catch {
+      return null;
+    }
+  }
+
+  async upsertSeries(pubkey: PublicKey, a: any, risk: { protocolId: string; score: number; expiresAt: number } | null = null): Promise<void> {
     const ts = (n: { toNumber(): number }) => n.toNumber();
     const optTs = (n: { toNumber(): number }) => (ts(n) === 0 ? null : ts(n));
     await this.db.query(
       `INSERT INTO series (id, pubkey, status, rate_bps, term_secs, maturity_ts, senior_principal, junior_principal, senior_payout, junior_payout,
                            underlying_mint, decimals, senior_mint, junior_mint, vault, strategy_pool, risk_entry, deposit_deadline, start_ts,
-                           min_junior_bps, min_risk_score, performance_fee_bps, updated_at)
-       VALUES ($1,$2,$3,$4,$5, to_timestamp($6), $7,$8,$9,$10, $11,$12,$13,$14,$15,$16,$17, to_timestamp($18), to_timestamp($19), $20,$21,$22, now())
+                           min_junior_bps, min_risk_score, performance_fee_bps, protocol_id, risk_score, risk_expires_at, updated_at)
+       VALUES ($1,$2,$3,$4,$5, to_timestamp($6), $7,$8,$9,$10, $11,$12,$13,$14,$15,$16,$17, to_timestamp($18), to_timestamp($19), $20,$21,$22, $23,$24, to_timestamp($25), now())
        ON CONFLICT (id) DO UPDATE SET pubkey=$2, status=$3, rate_bps=$4, term_secs=$5, maturity_ts=to_timestamp($6), senior_principal=$7,
          junior_principal=$8, senior_payout=$9, junior_payout=$10, underlying_mint=$11, decimals=$12, senior_mint=$13, junior_mint=$14, vault=$15,
          strategy_pool=$16, risk_entry=$17, deposit_deadline=to_timestamp($18), start_ts=to_timestamp($19), min_junior_bps=$20,
-         min_risk_score=$21, performance_fee_bps=$22, updated_at=now()`,
+         min_risk_score=$21, performance_fee_bps=$22,
+         protocol_id=COALESCE($23, series.protocol_id), risk_score=COALESCE($24, series.risk_score),
+         risk_expires_at=COALESCE(to_timestamp($25), series.risk_expires_at), updated_at=now()`,
       [
         a.id.toString(), pubkey.toBase58(), statusName(a.status), a.rateBps, a.termSecs.toString(), optTs(a.maturityTs),
         a.seniorPrincipal.toString(), a.juniorPrincipal.toString(), a.seniorPayout.toString(), a.juniorPayout.toString(),
         a.underlyingMint.toBase58(), await this.mintDecimals(a.underlyingMint), a.seniorMint.toBase58(), a.juniorMint.toBase58(),
         a.vault.toBase58(), a.strategyPool.toBase58(), a.riskEntry.toBase58(), ts(a.depositDeadline), optTs(a.startTs),
         a.minJuniorBps, a.minRiskScore, a.performanceFeeBps,
+        risk?.protocolId ?? null, risk?.score ?? null, risk?.expiresAt ?? null,
       ],
     );
   }
 
   async syncSeries(): Promise<number> {
     const all = await (this.programs.vault.account as any).series.all();
-    for (const { publicKey, account } of all) await this.upsertSeries(publicKey, account);
+    const fresh = new Map<string, Awaited<ReturnType<Indexer["readRisk"]>>>();
+    for (const { publicKey, account } of all) {
+      // live series re-read the entry every pass (the keeper refreshes it); finished ones read it once and cache it
+      const live = ["open", "active"].includes(statusName(account.status));
+      const k = account.riskEntry.toBase58();
+      if (live) {
+        if (!fresh.has(k)) fresh.set(k, await this.readRisk(account.riskEntry));
+      } else if (!this.riskCache.get(k)) {
+        this.riskCache.set(k, await this.readRisk(account.riskEntry));
+      }
+      await this.upsertSeries(publicKey, account, live ? fresh.get(k) ?? null : this.riskCache.get(k) ?? null);
+    }
     return all.length;
   }
 

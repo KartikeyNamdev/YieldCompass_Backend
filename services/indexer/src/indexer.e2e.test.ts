@@ -37,6 +37,9 @@ describe.skipIf(!RPC || !DB)("indexer end to end (local validator)", () => {
     expect(row.rate_bps).toBe(200);
     expect(row.decimals).toBe(6);
     expect(row.maturity_ts).toBeNull();
+    expect(row.protocol_id).toBe("idx-demo"); // read from the on-chain RiskEntry
+    expect(row.risk_score).toBe(85);
+    expect(row.risk_expires_at).not.toBeNull();
     const pos = async () =>
       Object.fromEntries((await db.query("SELECT owner, tranche, principal, claimed FROM positions WHERE series_id=201")).rows
         .map((r) => [`${r.owner}:${r.tranche}`, { principal: Number(r.principal), claimed: r.claimed }]));
