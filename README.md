@@ -97,7 +97,7 @@ The admin key has no path to move vault funds. `refund` and `claim_*` do not rea
    `FAUCET_AUTHORITY_KEYPAIR_JSON`. Devnet keys only.
 3. The public API is `https://yc-api.onrender.com` (or the URL Render shows). Use it as `BACKEND_URL` in the frontend.
 
-Cost is roughly five starter instances. Delete the blueprint when the demo is over. Any VPS also works: `docker compose -f infra/docker-compose.yml up -d`
+Cost is roughly five 0.5c-512mb (Starter-class) instances. Delete the blueprint when the demo is over. Any VPS also works: `docker compose -f infra/docker-compose.yml up -d`
 behind a TLS proxy such as Caddy.
 
 ## Test-token faucet
